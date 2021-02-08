@@ -1,0 +1,13 @@
+{
+    "name": "vue-app-get-map-data",
+    "version": "1.0.0",
+    "description": "An example of creating a Vue based plugin",
+    "main": "index.js",
+    "scripts": {
+        "postinstall": "npm install --prefix ./app",
+        "build:app": "npm run build --prefix ./app",
+        "serve:app": "npm run serve --prefix ./app"
+    },
+    "author": "RK",
+    "license": "ISC"
+}
