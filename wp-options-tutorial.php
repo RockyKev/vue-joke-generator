@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 // SETTINGS STUFF
 // Specify Hooks/Filters
@@ -13,13 +13,14 @@ function add_defaults_fn()
 	$tmp = get_option('plugin_options');
 	if (($tmp['chkbox1'] == 'on') || (!is_array($tmp))) {
 		$arr = array(
-			"dropdown1" => "Orange", 
-			"text_area" => "Space to put a lot of information here!", 
-			"text_string" => "Some sample text", 
-			"pass_string" => "123456", 
-			"chkbox1" => "", 
-			"chkbox2" => "on", 
-			"option_set1" => "Triangle");
+			"dropdown1" => "Orange",
+			"text_area" => "Space to put a lot of information here!",
+			"text_string" => "Some sample text",
+			"pass_string" => "123456",
+			"chkbox1" => "",
+			"chkbox2" => "on",
+			"option_set1" => "Triangle"
+		);
 		update_option('plugin_options', $arr);
 	}
 }

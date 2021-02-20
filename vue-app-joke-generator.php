@@ -10,18 +10,18 @@
  *
  * @link              #
  * @since             1.0.0
- * @package           Vue App Get Map Data
+ * @package           Vue Joke Generator
  *
  * @wordpress-plugin
- * Plugin Name:       Vue App Get Map Data
+ * Plugin Name:       Vue Joke Generator
  * Plugin URI:        #
- * Description:       This takes your coordinates from WordPress and generates a Google Maps Data
+ * Description:       This calls the Joke API and has a settings page. 
  * Version:           1.0.0
  * Author:            Rocky
  * Author URI:        #
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       author-generator-vue
+ * Text Domain:       joke-generator-vue
  * Domain Path:       /languages
  */
 
@@ -89,14 +89,18 @@ function vue_google_maps()
 // include 'wp-options-tutorial.php';
 
 // include the options page -- v2
-include 'wp-twilio-tutorial.php';
-$optionsInstance = new Sendex();
-// add the new settings
-add_action("admin_menu", [$optionsInstance , "addSendexAdminOption"]);
+// include 'wp-twilio-tutorial.php';
+// $optionsInstance = new Sendex();
+// // add the new settings
+// add_action("admin_menu", [$optionsInstance , "addSendexAdminOption"]);
 
-// save and update settings
-add_action("admin_init", [$optionsInstance , "sendexAdminSettingsSave"]);
+// // save and update settings
+// add_action("admin_init", [$optionsInstance , "sendexAdminSettingsSave"]);
 
+include 'vue-app-admin-settings-page.php';
+$settingsInstance = new SettingsForVuePlugin();
+add_action("admin_menu", [$settingsInstance, "addVueJokesAdminOptions"]); // hook into to WP
+add_action("admin_init", [$settingsInstance, "saveVueJokesAdminOptions"]); // hook into saving values
 
 
 // TODO: Change this shortcode call sign

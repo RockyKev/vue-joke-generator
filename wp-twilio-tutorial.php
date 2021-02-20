@@ -1,6 +1,4 @@
 <?php
-
-
 class Sendex
 {
     // 1 - identify the name of the plugin
@@ -36,8 +34,14 @@ class Sendex
         );
     }
 
+    // 4 - create the section Text
+    public function sendexSectionText()
+    {
+        echo '<h3 style="text-decoration: underline;">Edit api details</h3>';
+    }
+    
 
-    // 4 - Register the fields
+    // 5 - Register the fields
     // Also so when we hit save, it saves it in the WP Database
     public function sendexAdminSettingsSave()
     {
@@ -78,12 +82,7 @@ class Sendex
     }
 
 
-    // 
-    public function sendexSectionText()
-    {
-        echo '<h3 style="text-decoration: underline;">Edit api details</h3>';
-    }
-
+    // 6 - Create the inputs
     /**
      * Renders the sid input field
      *  @since    1.0.0
@@ -121,6 +120,8 @@ class Sendex
         ";
     }
 
+
+    // 7 - Validate/Sanitize text
     public function pluginOptionsValidate($input) {
 
         $newinput["api_sid"] = trim($input["api_sid"]);
