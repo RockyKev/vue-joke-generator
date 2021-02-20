@@ -1,24 +1,25 @@
 <template>
   <div>
-    <!-- <AuthorBio /> -->
-    <JokeApp />
+    <JokeApp :params="phpData" />
   </div>
 </template>
 
 <script>
-// import AuthorBio from "./components/AuthorBio.vue";
 import JokeApp from "./components/JokeApp.vue";
 
 export default {
   name: "App",
   components: {
-    // AuthorBio,
     JokeApp
   }, 
-  mounted: function() {
-    console.log("APP VUE LOADED");
-  }
+    props: {
+    phpData: Object,
+  },
+  mounted() {
+    console.log(this.phpData);
+  },
+  // mounted: function() {
+  //   console.log("APP VUE LOADED");
+  // }
 };
 </script>
-
-<style></style>

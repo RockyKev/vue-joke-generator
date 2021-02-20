@@ -2,7 +2,7 @@
 
 
 
-## How to create options page
+## How to create options/Settings page
 https://deliciousbrains.com/create-wordpress-plugin-settings-page/
 
 React: https://www.codeinwp.com/blog/plugin-options-page-gutenberg/
@@ -20,3 +20,9 @@ https://stackoverflow.com/questions/53093902/axios-is-not-defined-in-vue/5309441
 
 Joke API: 
 https://sv443.net/jokeapi/v2/
+
+// https://www.techiediaries.com/vue-3-fetch-data-rest-api/
+
+
+OPTIONAL CHAINING:
+https://stackoverflow.com/a/24403771/4096078

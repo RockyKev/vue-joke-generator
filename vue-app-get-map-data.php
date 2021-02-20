@@ -38,16 +38,50 @@ define('AUTHOR_GENERATOR_VUE', '1.0.0');
 // Invoke Shortcode
 
 function vue_google_maps() {
+
+	// let flags = "?blacklistFlags=nsfw";
+	// let jokeType = "&type=single";
+	// let jokeRange = "&idRange=50-100";
+
+	$phpData = [
+		'category' => [
+			'Programming' => true,
+			'Miscellaneous' => false,
+			'Pun' => false,
+			'Spooky' => true,
+			'Christmas' => false
+		],
+		'blacklist' => [
+			'nsfw' => true,
+			'religious' => false,
+			'political' => true,
+			'racist' => false,
+			'sexist' => false,
+			'explicit' => false
+		],
+		'jokeType' => [
+			'single' => true,
+			'twopart' => true
+		],
+		'range'=> [
+			'from' => 0,
+			'to' => 20
+		], 		
+	];
+
     // get Vue libs 
 	wp_register_script('vue-app-vendors',  plugins_url('app/dist/js/chunk-vendors.js', __FILE__), array(), '1.0.0');
 	wp_register_script('my-vue-app', plugins_url('app/dist/js/app.js', __FILE__), array('vue-app-vendors'), '1.0.0');
+
+	// pass php data
+	wp_localize_script('my-vue-app', 'phpData', $phpData);
 
 	// pass the scripts to WP
 	wp_enqueue_script('vue-app-vendors');
 	wp_enqueue_script('my-vue-app');
     wp_enqueue_style('my-vue-app',  plugins_url('app/dist/css/app.css', __FILE__),   array(),  '1.0.0');
     
-    return '<div id="app"></div><p>ERASE ME AFTER TESTING</p>';
+    return '<div id="app"></div>';
 
 }
 
