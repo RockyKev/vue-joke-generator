@@ -36,8 +36,8 @@ if (!defined('WPINC')) {
 define('AUTHOR_GENERATOR_VUE', '1.0.0');
 
 // Invoke Shortcode
-
-function vue_google_maps() {
+function vue_google_maps()
+{
 
 	// let flags = "?blacklistFlags=nsfw";
 	// let jokeType = "&type=single";
@@ -63,13 +63,13 @@ function vue_google_maps() {
 			'single' => true,
 			'twopart' => true
 		],
-		'range'=> [
+		'range' => [
 			'from' => 0,
 			'to' => 20
-		], 		
+		],
 	];
 
-    // get Vue libs 
+	// get Vue libs 
 	wp_register_script('vue-app-vendors',  plugins_url('app/dist/js/chunk-vendors.js', __FILE__), array(), '1.0.0');
 	wp_register_script('my-vue-app', plugins_url('app/dist/js/app.js', __FILE__), array('vue-app-vendors'), '1.0.0');
 
@@ -79,13 +79,28 @@ function vue_google_maps() {
 	// pass the scripts to WP
 	wp_enqueue_script('vue-app-vendors');
 	wp_enqueue_script('my-vue-app');
-    wp_enqueue_style('my-vue-app',  plugins_url('app/dist/css/app.css', __FILE__),   array(),  '1.0.0');
-    
-    return '<div id="app"></div>';
+	wp_enqueue_style('my-vue-app',  plugins_url('app/dist/css/app.css', __FILE__),   array(),  '1.0.0');
 
+	return '<div id="app"></div>';
 }
 
 
+// include the options page -- v1
+// include 'wp-options-tutorial.php';
+
+// include the options page -- v2
+include 'wp-twilio-tutorial.php';
+$optionsInstance = new Sendex();
+// add the new settings
+add_action("admin_menu", [$optionsInstance , "addSendexAdminOption"]);
+
+// save and update settings
+add_action("admin_init", [$optionsInstance , "sendexAdminSettingsSave"]);
+
+
+
 // TODO: Change this shortcode call sign
+// https://presscoders.com/wordpress-settings-api-explained/
 
 add_shortcode('generate-maps-vue', 'vue_google_maps');
+// add_action('init', 'initilize_plugin');

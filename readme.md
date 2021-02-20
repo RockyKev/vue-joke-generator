@@ -3,6 +3,17 @@
 
 
 ## How to create options/Settings page
+
+Easy peasy way to do it -- old fashion:
+https://presscoders.com/wordpress-settings-api-explained/
+
+ 
+Kinda modern: 
+https://www.twilio.com/blog/build-custom-wordpress-plugin-send-sms-twilio-programmable-messaging
+
+
+
+NOT very good: 
 https://deliciousbrains.com/create-wordpress-plugin-settings-page/
 
 React: https://www.codeinwp.com/blog/plugin-options-page-gutenberg/
