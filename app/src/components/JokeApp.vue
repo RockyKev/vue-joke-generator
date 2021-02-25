@@ -13,7 +13,8 @@
         </p>
 
         <p v-else-if="info.type == 'twopart'">
-          SETUP: {{ info.setup }} <br />
+          SETUP: {{ info.setup }} 
+          <br /><br /><br />
           DELIVERY: {{ info.delivery }}
         </p>
 
@@ -22,9 +23,17 @@
         </p>
 
         <div v-show="!info.error">
-          METADATA: This joke is not.
-          <ul v-for="(value, name) in info.flags" :key="name">
-            <li>{{ name }} : {{ value }}</li>
+          <hr />
+          METADATA from api:
+          <ul>
+            <li>ID: {{ info.id }}</li>
+            <li>language: {{ info.lang}}</li>
+            <li>type: {{ info.type}}</li>
+            <li>category: {{ info.category}}</li>            
+          </ul>
+          Flags: 
+          <ul>
+            <li v-for="(value, name) in info.flags" :key="name">{{ name }} : {{ value }}</li>
           </ul>
         </div>
       </div>
@@ -47,61 +56,39 @@ export default {
   },
   mounted() {
     this.fetchAPIData();
-    // this.getProps();
   },
   methods: {
     fetchAPIData() {
       console.log("in fetch");
-      // console.log(this.params.category);
 
       // get category
-      let categories = Object.keys(this.params.category).filter(
-        (key) => this.params.category[key]
-      );
-
-      const categoriesOutput = categories?.length
-        ? categories.toString() + "?"
-        : "Any?";
-      // console.log({categories})
-      console.log({ categoriesOutput });
+      const categories = Object.keys(this.params.category)
+                             .filter((key) => this.params.category[key]);
+      const categoriesOutput = categories?.length ? categories.toString() + "?" : "Any?";
 
       // get blacklist
-      let blacklist = Object.keys(this.params.blacklist).filter(
-        (key) => this.params.blacklist[key]
-      );
-      const blacklistOutput = blacklist?.length
-        ? "blacklistFlags=" + blacklist.toString() + "&"
-        : "";
+      const blacklist = Object.keys(this.params.blacklist)
+                            .filter((key) => this.params.blacklist[key]);
+      const blacklistOutput = blacklist?.length ? "blacklistFlags=" + blacklist.toString() + "&" : "";
 
       // get jokeType
-      // let jokeType = Object.keys(this.params.jokeType).filter(
-      //   (key) => this.params.jokeType[key]
-      // );
-      let jokeType = this.params.jokeType;
+      const jokeType = this.params.jokeType;
       const jokeTypeOutput = jokeType !== "any" ? "type=" + jokeType + "&" : "";
 
       // get range -- if any of them are blank, ignore
-      // range can be zero
       const rangeFrom = this.params.range.from;
       const rangeTo = this.params.range.to;
       const rangeOutput =
-        rangeFrom !== null && rangeFrom !== undefined && rangeTo
-          ? "idRange=" + rangeFrom + "-" + rangeTo
-          : "";
-      // console.log("Range from" + rangeFrom + " to " + rangeTo);
-      // console.log({rangeOutput})
-      // let jokeRange2 = "idRange=50-100";
+        (rangeFrom !== null) && (rangeFrom !== undefined) && rangeTo
+          ? "idRange=" + rangeFrom + "-" + rangeTo : "";
 
-      // let range =
-      // console.log({categories})
-
-      // const url = "https://v2.jokeapi.dev/joke/Any?" + blacklist2 + jokeType2 + jokeRange2;
       const url =
         "https://v2.jokeapi.dev/joke/" +
         categoriesOutput +
         blacklistOutput +
         jokeTypeOutput +
         rangeOutput;
+
       console.log("url sent", url);
 
       fetch(url)
@@ -110,11 +97,10 @@ export default {
           this.info = response;
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
           this.error = true;
         })
         .finally(() => {
-          console.log("in finally");
           console.log(this.info);
 
           this.loading = false;

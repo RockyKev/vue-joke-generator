@@ -3,11 +3,6 @@
 /**
  * The plugin bootstrap file
  *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
- *
  * @link              #
  * @since             1.0.0
  * @package           Vue Joke Generator
@@ -35,10 +30,45 @@ if (!defined('WPINC')) {
  */
 define('AUTHOR_GENERATOR_VUE', '1.0.0');
 
-// Invoke Shortcode
-function vue_google_maps()
-{
 
+
+// create a settings page
+include 'vue-app-admin-settings-page.php';
+$settingsInstance = new SettingsForVuePlugin();
+
+add_action("admin_menu", [$settingsInstance, "addVueJokesAdminOptions"]); // hook into to WP
+add_action("admin_init", [$settingsInstance, "saveVueJokesAdminOptions"]); // hook into saving values
+
+// Helper functions
+function replace_key_names($array, $search_string, $replace_with) {
+    $matches = [];
+
+    foreach ($array as $key => $value) {
+        if (strstr($key, $search_string)) {
+			$newKey = str_replace($search_string, $replace_with, $key);
+            $matches[$newKey] = $value;
+        }
+    }
+
+    return $matches;	
+}
+
+function get_values_with_key($array, $search_string) {
+    $matches = [];
+
+    foreach ($array as $key => $value) {
+        if (strstr($key, $search_string)) {
+            $matches[$key] = $value;
+        }
+    }
+
+    return $matches;
+}
+
+
+
+// Invoke Shortcode
+function vue_fetch_jokes() {
 		// this will pass as a flatten array
 	// {
 	// 	"blacklist-nsfw": "",
@@ -104,7 +134,7 @@ function vue_google_maps()
 		],
 	];
 
-	print_r($php_data);
+	// print_r($php_data);
 
 	// get Vue libs 
 	wp_register_script('vue-app-vendors',  plugins_url('app/dist/js/chunk-vendors.js', __FILE__), array(), '1.0.0');
@@ -122,51 +152,4 @@ function vue_google_maps()
 	return '<div id="app"></div>';
 }
 
-function replace_key_names($array, $search_string, $replace_with) {
-    $matches = [];
-
-    foreach ($array as $key => $value) {
-        if (strstr($key, $search_string)) {
-			$newKey = str_replace($search_string, "", $key);
-            $matches[$newKey] = $value;
-        }
-    }
-
-    return $matches;	
-}
-
-function get_values_with_key($array, $search_string) {
-    $matches = [];
-
-    foreach ($array as $key => $value) {
-        if (strstr($key, $search_string)) {
-            $matches[$key] = $value;
-        }
-    }
-
-    return $matches;
-}
-
-// include the options page -- v1
-// include 'wp-options-tutorial.php';
-
-// include the options page -- v2
-// include 'wp-twilio-tutorial.php';
-// $optionsInstance = new Sendex();
-// // add the new settings
-// add_action("admin_menu", [$optionsInstance , "addSendexAdminOption"]);
-
-// // save and update settings
-// add_action("admin_init", [$optionsInstance , "sendexAdminSettingsSave"]);
-
-include 'vue-app-admin-settings-page.php';
-$settingsInstance = new SettingsForVuePlugin();
-add_action("admin_menu", [$settingsInstance, "addVueJokesAdminOptions"]); // hook into to WP
-add_action("admin_init", [$settingsInstance, "saveVueJokesAdminOptions"]); // hook into saving values
-
-
-// TODO: Change this shortcode call sign
-// https://presscoders.com/wordpress-settings-api-explained/
-
-add_shortcode('generate-maps-vue', 'vue_google_maps');
-// add_action('init', 'initilize_plugin');
+add_shortcode('generate-vue-jokes', 'vue_fetch_jokes');

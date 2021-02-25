@@ -15,11 +15,8 @@ export default {
     props: {
     phpData: Object,
   },
-  mounted() {
-    console.log(this.phpData);
-  },
-  // mounted: function() {
-  //   console.log("APP VUE LOADED");
-  // }
+  // mounted() {
+  //   console.log(this.phpData);
+  // },
 };
 </script>

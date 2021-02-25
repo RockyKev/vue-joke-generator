@@ -74,7 +74,7 @@ class SettingsForVuePlugin {
         // category --> checkboxes 
         add_settings_field(
             "joke_category",
-            "Joke Category (Show)",
+            "Joke Category (Show Only. If none are checked, then all are selected)",
             [$this, "inputJokeOptionsCategory"], // has to be a callback
             $this->pluginSettingsName,
             $this->pluginName . "-joke-options"
@@ -83,7 +83,7 @@ class SettingsForVuePlugin {
         // blacklist --> checkboxes 
         add_settings_field(
             "joke_blacklist",
-            "Joke Blacklist (Remove)",
+            "Joke Blacklist (Remove These types of jokes)",
             [$this, "inputJokeOptionsBlacklist"],
             $this->pluginSettingsName,
             $this->pluginName . "-joke-options"
