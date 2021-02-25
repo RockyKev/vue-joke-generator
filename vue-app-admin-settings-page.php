@@ -9,15 +9,15 @@ class SettingsForVuePlugin {
     // 2 - Create the Form's UI
     // and name the page
     public function displaySettingsPage() {
-?>
-        <form method="POST" action="options.php">
-            <?php
-            settings_fields($this->pluginName);
-            do_settings_sections($this->pluginSettingsName);
-            submit_button();
-            ?>
-        </form>
-<?php
+        ?>
+            <form method="POST" action="options.php">
+                <?php
+                settings_fields($this->pluginName);
+                do_settings_sections($this->pluginSettingsName);
+                submit_button();
+                ?>
+            </form>
+        <?php
     }
 
     // 3 - Add it to WordPress, so it can be seen as a option
@@ -107,7 +107,7 @@ class SettingsForVuePlugin {
 
         // jokerange -> input 1
         add_settings_field(
-            "joke_range_1",
+            "joke-range1",
             "Jokes - From:",
             [$this, "inputAPIJokeRange1"],
             $this->pluginSettingsName,
@@ -116,7 +116,7 @@ class SettingsForVuePlugin {
 
         // jokerange -> input 2
         add_settings_field(
-            "joke_range_2",
+            "joke-range2",
             "Jokes - To:",
             [$this, "inputAPIJokeRange2"],
             $this->pluginSettingsName,
@@ -187,18 +187,18 @@ class SettingsForVuePlugin {
         }
 
 
-        echo "<fieldset>$html</fieldset>"; 
+        echo "<fieldset>$html</fieldset>";
     }
 
     public function inputAPIJokeRange1() {
         $options = get_option($this->pluginName);
         echo "
                 <input 
-                    id='$this->pluginName[joke_range_1]'
-                    name='$this->pluginName[joke_range_1]'
+                    id='$this->pluginName[joke-range1]'
+                    name='$this->pluginName[joke-range1]'
                     size='20'
                     type='text'
-                    value='{$options['joke_range_1']}'
+                    value='{$options['joke-range1']}'
                     placeholder='0'
                 />
             ";
@@ -208,11 +208,11 @@ class SettingsForVuePlugin {
         $options = get_option($this->pluginName);
         echo "
                 <input 
-                    id='$this->pluginName[joke_range_2]'
-                    name='$this->pluginName[joke_range_2]'
+                    id='$this->pluginName[joke-range2]'
+                    name='$this->pluginName[joke-range2]'
                     size='20'
                     type='text'
-                    value='{$options['joke_range_2']}'
+                    value='{$options['joke-range2']}'
                     placeholder='100'
                 />
             ";
@@ -234,8 +234,8 @@ class SettingsForVuePlugin {
             "blacklist-racist",
             "blacklist-sexist",
             'joketype',
-            'joke_range_1',
-            'joke_range_2'
+            'joke-range1',
+            'joke-range2'
         ];
 
         foreach ($formElements as $element) {

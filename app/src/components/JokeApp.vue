@@ -66,9 +66,7 @@ export default {
       const blacklistOutput = blacklist?.length
         ? "blacklistFlags=" + blacklist.toString() + "&"
         : "";
-      // let blacklist2 = "blacklistFlags=nsfw&";
-      // console.log({blacklist})
-      // console.log({blacklistOutput})
+ 
 
       // get jokeType
       let jokeType = Object.keys(this.params.jokeType).filter(
@@ -76,9 +74,6 @@ export default {
       );
       const jokeTypeOutput =
         jokeType.length === 1 ? "type=" + blacklist.toString() + "&" : "";
-      // console.log({jokeType})
-      // let jokeType2 = "type=single&";
-      // console.log({jokeTypeOutput})
 
       // get range -- if any of them are blank, ignore
       // range can be zero
@@ -118,9 +113,6 @@ export default {
           console.log(this.info);
         });
     },
-    // changeToDecimal(value, decimal){
-    //     return value.toFixed(decimal);
-    // }
   },
 };
 </script>

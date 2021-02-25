@@ -1,6 +1,12 @@
 # Some sort of map api plugin
 
 
+TODO LIST:
+
+[x] - Set up so the settings work
+[x] - set up so vue works
+[] - Pull the config into the vue plugin
+
 
 ## How to create options/Settings page
 
