@@ -39,9 +39,23 @@ define('AUTHOR_GENERATOR_VUE', '1.0.0');
 function vue_google_maps()
 {
 
-	// let flags = "?blacklistFlags=nsfw";
-	// let jokeType = "&type=single";
-	// let jokeRange = "&idRange=50-100";
+		// this will pass as a flatten array
+	// {
+	// 	"blacklist-nsfw": "",
+	// 	"blacklist-political": "",
+	// 	"blacklist-racist": "on",
+	// 	"blacklist-religious": "",
+	// 	"blacklist-sexist": "",
+	// 	"category-christmas": "on",
+	// 	"category-miscellaneous": "on",
+	// 	"category-programming": "on",
+	// 	"category-pun": "on",
+	// 	"category-spooky": "on",
+	// 	"joke-range_1": "1",
+	// 	"joke-range_2": "10",
+	// 	"joketype": "any"
+	// }
+
 
 	// $phpData = [
 	// 	'category' => [
@@ -69,11 +83,28 @@ function vue_google_maps()
 	// 	],
 	// ];
 
-	// print_r(get_option("vue-jokes"));
-	// echo json_encode(get_option("vue-jokes"));
-	// die;
-
 	// shape the array 
+	$options_data = get_option("vue-jokes");
+
+	// reshape the array into it's own pieces
+	$blacklist_array = get_values_with_key($options_data, "blacklist-");
+	$category_array = get_values_with_key($options_data, "category-");
+
+	// clean up
+	$blacklist_array = replace_key_names($blacklist_array, "blacklist-", "");
+	$category_array = replace_key_names($category_array, "category-", "");
+
+	$php_data = [
+		'category' => $category_array,
+		'blacklist' => $blacklist_array,
+		'jokeType' => $options_data['joketype'],
+		'range' => [
+			'from' =>  $options_data['joke-range1'],
+			'to' => $options_data['joke-range2']
+		],
+	];
+
+	print_r($php_data);
 
 	// get Vue libs 
 	wp_register_script('vue-app-vendors',  plugins_url('app/dist/js/chunk-vendors.js', __FILE__), array(), '1.0.0');
@@ -81,26 +112,8 @@ function vue_google_maps()
 
 	// pass php data
 	// wp_localize_script('my-vue-app', 'phpData', $phpData);
-	wp_localize_script('my-vue-app', 'phpData', get_option("vue-jokes"));
-	
+	wp_localize_script('my-vue-app', 'phpData', $php_data);	
 
-	// this will pass as a flatten array
-	// {
-	// 	"blacklist-nsfw": "",
-	// 	"blacklist-political": "",
-	// 	"blacklist-racist": "on",
-	// 	"blacklist-religious": "",
-	// 	"blacklist-sexist": "",
-	// 	"category-christmas": "on",
-	// 	"category-miscellaneous": "on",
-	// 	"category-programming": "on",
-	// 	"category-pun": "on",
-	// 	"category-spooky": "on",
-	// 	"joke-range_1": "1",
-	// 	"joke-range_2": "10",
-	// 	"joketype": "any"
-	// }
-	
 	// pass the scripts to WP
 	wp_enqueue_script('vue-app-vendors');
 	wp_enqueue_script('my-vue-app');
@@ -109,6 +122,30 @@ function vue_google_maps()
 	return '<div id="app"></div>';
 }
 
+function replace_key_names($array, $search_string, $replace_with) {
+    $matches = [];
+
+    foreach ($array as $key => $value) {
+        if (strstr($key, $search_string)) {
+			$newKey = str_replace($search_string, "", $key);
+            $matches[$newKey] = $value;
+        }
+    }
+
+    return $matches;	
+}
+
+function get_values_with_key($array, $search_string) {
+    $matches = [];
+
+    foreach ($array as $key => $value) {
+        if (strstr($key, $search_string)) {
+            $matches[$key] = $value;
+        }
+    }
+
+    return $matches;
+}
 
 // include the options page -- v1
 // include 'wp-options-tutorial.php';

@@ -1,26 +1,30 @@
 <template>
   <div>
-    <div>
-      <h2>In wordpress, we select what type of jokes we can have</h2>
-    </div>
-
-    <div v-if="errored">Sorry something happened.</div>
+    <div v-if="errored">Sorry. API call failed for some reason.</div>
 
     <div v-else>
       <div v-if="loading">Loading...</div>
 
       <div v-else>
         <h2>It's YUK YUK TIME.</h2>
-        <p v-if="info.type == 'twopart'">
+
+        <p v-if="info.error">
+          {{ info.message }}
+        </p>
+
+        <p v-else-if="info.type == 'twopart'">
           SETUP: {{ info.setup }} <br />
           DELIVERY: {{ info.delivery }}
         </p>
-        <p v-else>{{ info.joke }}</p>
 
-        <div>
-          This joke is not:
+        <p v-else>
+          {{ info.joke }}
+        </p>
+
+        <div v-show="!info.error">
+          METADATA: This joke is not.
           <ul v-for="(value, name) in info.flags" :key="name">
-            <li>{{name}} : {{ value }}</li>
+            <li>{{ name }} : {{ value }}</li>
           </ul>
         </div>
       </div>
@@ -43,6 +47,7 @@ export default {
   },
   mounted() {
     this.fetchAPIData();
+    // this.getProps();
   },
   methods: {
     fetchAPIData() {
@@ -53,6 +58,7 @@ export default {
       let categories = Object.keys(this.params.category).filter(
         (key) => this.params.category[key]
       );
+
       const categoriesOutput = categories?.length
         ? categories.toString() + "?"
         : "Any?";
@@ -66,14 +72,13 @@ export default {
       const blacklistOutput = blacklist?.length
         ? "blacklistFlags=" + blacklist.toString() + "&"
         : "";
- 
 
       // get jokeType
-      let jokeType = Object.keys(this.params.jokeType).filter(
-        (key) => this.params.jokeType[key]
-      );
-      const jokeTypeOutput =
-        jokeType.length === 1 ? "type=" + blacklist.toString() + "&" : "";
+      // let jokeType = Object.keys(this.params.jokeType).filter(
+      //   (key) => this.params.jokeType[key]
+      // );
+      let jokeType = this.params.jokeType;
+      const jokeTypeOutput = jokeType !== "any" ? "type=" + jokeType + "&" : "";
 
       // get range -- if any of them are blank, ignore
       // range can be zero
@@ -109,8 +114,10 @@ export default {
           this.error = true;
         })
         .finally(() => {
-          this.loading = false;
+          console.log("in finally");
           console.log(this.info);
+
+          this.loading = false;
         });
     },
   },
