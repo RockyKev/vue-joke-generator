@@ -8,32 +8,21 @@
       <div v-else>
         <h2>It's YUK YUK TIME.</h2>
 
-        <p v-if="info.error">
-          {{ info.message }}
-        </p>
+        <p v-html="content"></p>
 
-        <p v-else-if="info.type == 'twopart'">
-          SETUP: {{ info.setup }} 
-          <br /><br /><br />
-          DELIVERY: {{ info.delivery }}
-        </p>
-
-        <p v-else>
-          {{ info.joke }}
-        </p>
-
-        <div v-show="!info.error">
+        <!-- Random extra content because why not -->
+        <div v-show="!response.error">
           <hr />
           METADATA from api:
           <ul>
-            <li>ID: {{ info.id }}</li>
-            <li>language: {{ info.lang}}</li>
-            <li>type: {{ info.type}}</li>
-            <li>category: {{ info.category}}</li>            
+            <li>ID: {{ response.id }}</li>
+            <li>language: {{ response.lang}}</li>
+            <li>type: {{ response.type}}</li>
+            <li>category: {{ response.category}}</li>            
           </ul>
           Flags: 
           <ul>
-            <li v-for="(value, name) in info.flags" :key="name">{{ name }} : {{ value }}</li>
+            <li v-for="(value, name) in response.flags" :key="name">{{ name }} : {{ value }}</li>
           </ul>
         </div>
       </div>
@@ -49,18 +38,41 @@ export default {
   },
   data: function () {
     return {
-      info: null,
+      response: null,
       loading: true,
       errored: false,
+      content: "",
     };
   },
   mounted() {
-    this.fetchAPIData();
+    this.fetchAPI();
   },
   methods: {
-    fetchAPIData() {
+    fetchAPI() {
       console.log("in fetch");
 
+      const url =
+        "https://v2.jokeapi.dev/joke/" + this.addFetchParams();
+
+      console.log("url sent", url);
+
+      fetch(url)
+        .then((response) => response.json())
+        .then((response) => {
+          this.response = response;
+        })
+        .catch((error) => {
+          console.error(error);
+          this.error = true;
+        })
+        .finally(() => {
+          console.log(this.response);
+          this.showResults();
+
+          this.loading = false;
+        });
+    },
+    addFetchParams() {
       // get category
       const categories = Object.keys(this.params.category)
                              .filter((key) => this.params.category[key]);
@@ -82,30 +94,25 @@ export default {
         (rangeFrom !== null) && (rangeFrom !== undefined) && rangeTo
           ? "idRange=" + rangeFrom + "-" + rangeTo : "";
 
-      const url =
-        "https://v2.jokeapi.dev/joke/" +
-        categoriesOutput +
-        blacklistOutput +
-        jokeTypeOutput +
-        rangeOutput;
-
-      console.log("url sent", url);
-
-      fetch(url)
-        .then((response) => response.json())
-        .then((response) => {
-          this.info = response;
-        })
-        .catch((error) => {
-          console.error(error);
-          this.error = true;
-        })
-        .finally(() => {
-          console.log(this.info);
-
-          this.loading = false;
-        });
+        return categoriesOutput + blacklistOutput + jokeTypeOutput + rangeOutput;
     },
+    showResults() {
+
+      // if it's an error, show it. Else show the joke type
+      if (this.response.error) {
+        this.content = this.response.message;
+      } else if (this.response.type === "twopart") {
+        this.content = `
+          SETUP: ${this.response.setup} <br /><br /><br />
+          DELIVERY: ${ this.response.delivery }
+        `
+      } else if (this.response.type === "single") {
+        this.content = this.response.joke;
+      } else {
+        this.content = "Something happened and I'm not quite sure.";
+      }
+
+    }
   },
 };
 </script>

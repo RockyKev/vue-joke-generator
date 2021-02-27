@@ -12,7 +12,7 @@ export default {
   components: {
     JokeApp
   }, 
-    props: {
+  props: {
     phpData: Object,
   },
   // mounted() {

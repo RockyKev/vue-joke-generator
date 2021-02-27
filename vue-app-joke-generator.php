@@ -65,6 +65,11 @@ function get_values_with_key($array, $search_string) {
     return $matches;
 }
 
+// Borrowed from https://wordpress.stackexchange.com/a/137889/132722
+function check_if_option_exists($name, $site_wide = false){
+    global $wpdb; 
+    return $wpdb->query("SELECT * FROM ". ($site_wide ? $wpdb->base_prefix : $wpdb->prefix). "options WHERE option_name ='$name' LIMIT 1");
+}
 
 
 // Invoke Shortcode
@@ -89,60 +94,80 @@ function vue_fetch_jokes() {
 
 	// $phpData = [
 	// 	'category' => [
-	// 		'Programming' => true,
-	// 		'Miscellaneous' => false,
-	// 		'Pun' => false,
-	// 		'Spooky' => true,
-	// 		'Christmas' => false
+	// 		'Programming' => "",
+	// 		'Miscellaneous' => "on",
+	// 		'Pun' => "",
+	// 		'Spooky' => "",
+	// 		'Christmas' => ""
 	// 	],
 	// 	'blacklist' => [
-	// 		'nsfw' => true,
-	// 		'religious' => false,
-	// 		'political' => true,
-	// 		'racist' => false,
-	// 		'sexist' => false,
-	// 		'explicit' => false
+	// 		'nsfw' => "on",
+	// 		'religious' => "",
+	// 		'political' => "on",
+	// 		'racist' => "",
+	// 		'sexist' => "",
+	// 		'explicit' => ""
 	// 	],
-	// 	'jokeType' => [
-	// 		'single' => true,
-	// 		'twopart' => true
-	// 	],
+	// 	'joketype' => 'any',
+	// 	'joke_range1'=> 0,
+	// 	'joke_range2'=> 20,
+	// ];
+
+	// Check if the options even exists. 
+	// https://wordpress.stackexchange.com/a/137889/132722
+
+
+	// shape the array 
+	// $options_data = get_option("vue-jokes");
+
+	// // reshape the array into it's own pieces
+	// $blacklist_array = get_values_with_key($options_data, "blacklist-");
+	// $category_array = get_values_with_key($options_data, "category-");
+
+	// // clean up
+	// $blacklist_array = replace_key_names($blacklist_array, "blacklist-", "");
+	// $category_array = replace_key_names($category_array, "category-", "");
+
+	// $php_data = [
+	// 	'category' => $category_array,
+	// 	'blacklist' => $blacklist_array,
+	// 	'jokeType' => $options_data['joketype'],
 	// 	'range' => [
-	// 		'from' => 0,
-	// 		'to' => 20
+	// 		'from' =>  $options_data['joke-range1'],
+	// 		'to' => $options_data['joke-range2']
 	// 	],
 	// ];
 
 	// shape the array 
-	$options_data = get_option("vue-jokes");
+	if (check_if_option_exists("vue-jokes")) {
 
-	// reshape the array into it's own pieces
-	$blacklist_array = get_values_with_key($options_data, "blacklist-");
-	$category_array = get_values_with_key($options_data, "category-");
+		$options_data = get_option("vue-jokes");
 
-	// clean up
-	$blacklist_array = replace_key_names($blacklist_array, "blacklist-", "");
-	$category_array = replace_key_names($category_array, "category-", "");
-
-	$php_data = [
-		'category' => $category_array,
-		'blacklist' => $blacklist_array,
-		'jokeType' => $options_data['joketype'],
-		'range' => [
+		// reshape the array into it's own pieces
+		$blacklist_array = get_values_with_key($options_data, "blacklist-");
+		$category_array = get_values_with_key($options_data, "category-");
+	
+		// clean up
+		$blacklist_array = replace_key_names($blacklist_array, "blacklist-", "");
+		$category_array = replace_key_names($category_array, "category-", "");
+	
+		$php_data = [
+		  'category' => $category_array,
+		  'blacklist' => $blacklist_array,
+		  'jokeType' => $options_data['joketype'],
+		  'range' => [
 			'from' =>  $options_data['joke-range1'],
 			'to' => $options_data['joke-range2']
-		],
-	];
-
-	// print_r($php_data);
+		  ],
+		];
+		  
+		// pass php data
+		wp_localize_script('my-vue-app', 'phpData', $php_data);	
+	  }
 
 	// get Vue libs 
 	wp_register_script('vue-app-vendors',  plugins_url('app/dist/js/chunk-vendors.js', __FILE__), array(), '1.0.0');
 	wp_register_script('my-vue-app', plugins_url('app/dist/js/app.js', __FILE__), array('vue-app-vendors'), '1.0.0');
-
-	// pass php data
-	// wp_localize_script('my-vue-app', 'phpData', $phpData);
-	wp_localize_script('my-vue-app', 'phpData', $php_data);	
 
 	// pass the scripts to WP
 	wp_enqueue_script('vue-app-vendors');
