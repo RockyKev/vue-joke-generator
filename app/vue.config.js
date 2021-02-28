@@ -18,7 +18,8 @@ module.exports = {
   },
   devServer: {
     writeToDisk: true,
-    hot: false
+    hot: false,
+    disableHostCheck: true
   },
   productionSourceMap: false
 };
